@@ -1,6 +1,7 @@
 package net.tkarura.resourcedungeons.forge;
 
 import net.minecraftforge.event.terraingen.PopulateChunkEvent;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.tkarura.resourcedungeons.core.generate.DungeonCheckPoint;
@@ -73,6 +74,7 @@ public class ServerListener {
         engine.setBaseLocation(point.getX(), point.getY(), point.getZ());
         engine.setWorld(world);
         engine.setSessionManager(ResourceDungeonsForge.getInstance().getResourceDungeons().getSessionManager());
+        engine.setScriptLibraryDir(Loader.instance().getIndexedModList().get(ResourceDungeonsForge.MODID).getSource());
 
         new Thread(() -> {
             try {
