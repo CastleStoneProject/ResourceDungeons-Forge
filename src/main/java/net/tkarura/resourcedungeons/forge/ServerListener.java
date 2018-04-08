@@ -9,7 +9,9 @@ import net.tkarura.resourcedungeons.core.script.DungeonScriptEngine;
 import net.tkarura.resourcedungeons.core.server.IDungeonWorld;
 
 import java.util.ArrayDeque;
+import java.util.Collections;
 import java.util.Deque;
+import java.util.List;
 
 public class ServerListener {
 
@@ -62,7 +64,11 @@ public class ServerListener {
             return;
         }
 
-        DungeonCheckPoint point = check.getCheckPoints().get(0);
+        List<DungeonCheckPoint> points = check.getCheckPoints();
+
+        Collections.shuffle(points);
+
+        DungeonCheckPoint point = points.get(0);
         DungeonScriptEngine engine = new DungeonScriptEngine(point.getDungeon());
         engine.setBaseLocation(point.getX(), point.getY(), point.getZ());
         engine.setWorld(world);
