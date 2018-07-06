@@ -84,4 +84,9 @@ public class ResourceDungeonsForge
     public ServerListener getServerListener() {
          return this.listener;
     }
+
+    public static File getDungeonScriptLibraryDir() {
+        return Loader.instance().getIndexedModList().get(ResourceDungeonsForge.MODID).getSource();
+    }
+
 }

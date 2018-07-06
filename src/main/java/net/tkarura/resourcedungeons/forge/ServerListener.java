@@ -1,7 +1,7 @@
 package net.tkarura.resourcedungeons.forge;
 
 import net.minecraftforge.event.terraingen.PopulateChunkEvent;
-import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.tkarura.resourcedungeons.core.generate.DungeonCheckPoint;
@@ -9,15 +9,11 @@ import net.tkarura.resourcedungeons.core.generate.DungeonGenerateCheck;
 import net.tkarura.resourcedungeons.core.script.DungeonScriptEngine;
 import net.tkarura.resourcedungeons.core.server.IDungeonWorld;
 
-import java.util.ArrayDeque;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.List;
+import java.util.*;
 
 public class ServerListener {
 
     private Deque<DungeonScriptEngine> handles = new ArrayDeque<>();
-    private boolean generate_lock = false;
 
     public void setGenerateHandle(DungeonScriptEngine handle) {
         this.handles.push(handle);
@@ -31,18 +27,12 @@ public class ServerListener {
             return;
         }
 
-        generate_lock = true;
         handles.pop().runSessions();
-        generate_lock = false;
 
     }
 
     @SubscribeEvent
     public void populate(PopulateChunkEvent.Post event) {
-
-        if (generate_lock) {
-            return;
-        }
 
         IDungeonWorld world = new ForgeWorld(event.getWorld());
 
@@ -74,13 +64,16 @@ public class ServerListener {
         engine.setBaseLocation(point.getX(), point.getY(), point.getZ());
         engine.setWorld(world);
         engine.setSessionManager(ResourceDungeonsForge.getInstance().getResourceDungeons().getSessionManager());
-        engine.setScriptLibraryDir(Loader.instance().getIndexedModList().get(ResourceDungeonsForge.MODID).getSource());
+        engine.setScriptLibraryDir(ResourceDungeonsForge.getDungeonScriptLibraryDir());
 
         new Thread(() -> {
             try {
                 engine.loadScripts();
                 engine.callMainFunction();
                 ResourceDungeonsForge.getInstance().getServerListener().setGenerateHandle(engine);
+                FMLLog.log.info(
+                        "Dungeon Generated. id: " + point.getDungeon().getId() +
+                                " x: " + point.getX() + " y: " + point.getY() + " z: " + point.getZ());
             } catch (Exception e) {
                 e.printStackTrace();
             }

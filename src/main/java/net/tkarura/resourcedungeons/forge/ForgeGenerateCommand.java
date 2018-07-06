@@ -8,23 +8,25 @@ import net.tkarura.resourcedungeons.core.script.DungeonScriptEngine;
 
 import java.io.File;
 
+import static net.tkarura.resourcedungeons.core.ResourceDungeons.PREFIX_MES;
+
 public class ForgeGenerateCommand extends DungeonGenerateCommand {
 
     @Override
     public void generate(DungeonCommandSender sender, DungeonScriptEngine engine) throws DungeonScriptException {
 
         // ライブラリディレクトリを設定
-        engine.setScriptLibraryDir(Loader.instance().getIndexedModList().get(ResourceDungeonsForge.MODID).getSource());
+        engine.setScriptLibraryDir(ResourceDungeonsForge.getDungeonScriptLibraryDir());
 
         new Thread(() -> {
             try {
                 engine.loadScripts();
                 engine.callMainFunction();
                 ResourceDungeonsForge.getInstance().getServerListener().setGenerateHandle(engine);
-                sender.sendMessage("Dungeon Generate Complete.");
+                sender.sendMessage(PREFIX_MES + " &aダンジョンの生成に成功しました。");
             } catch (DungeonScriptException e) {
                 e.printStackTrace();
-                sender.sendMessage("Dungeon Generate Failed. reason: " + e.getLocalizedMessage());
+                sender.sendMessage(PREFIX_MES + " &cダンジョンの生成に失敗しました。 : " + e.getLocalizedMessage());
             }
         }).start();
 
