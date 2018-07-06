@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.text.TextComponentBase;
 import net.minecraft.util.text.TextComponentString;
 import net.tkarura.resourcedungeons.core.command.DungeonCommandSender;
 import net.tkarura.resourcedungeons.core.server.IDungeonWorld;
@@ -22,7 +23,11 @@ public class ForgeCommandSender implements DungeonCommandSender {
 
     @Override
     public void sendMessage(String message) {
-        this.sender.sendMessage(new TextComponentString(message));
+        this.sender.sendMessage(new TextComponentString(colorFormat(message)));
+    }
+
+    private String colorFormat(String message) {
+        return message.replaceAll("&", "§");
     }
 
     @Override
