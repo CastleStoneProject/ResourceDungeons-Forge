@@ -99,7 +99,7 @@ public final class NBTTagConverter {
     public static NBTBase convert(DNBTBase nbt) {
 
         if (nbt == null) {
-            return new NBTTagEnd();
+            return null;
         }
 
         switch (nbt.getTypeId()) {
@@ -149,11 +149,11 @@ public final class NBTTagConverter {
             }
 
             case DNBTBase.TAG_END: {
-                return new NBTTagEnd();
+                return null;
             }
 
             default: {
-                return new NBTTagEnd();
+                return null;
             }
 
         }
